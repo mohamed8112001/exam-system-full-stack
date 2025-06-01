@@ -56,5 +56,4 @@ const ExamSchema = new Schema(
   { timestamps: true }
 );
 
-
 module.exports = { Exam: model("Exam", ExamSchema) };
