@@ -38,4 +38,4 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-module.exports = model("User", UserSchema);
+module.exports = { User: model("User", UserSchema) };
