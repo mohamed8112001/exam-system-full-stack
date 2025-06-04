@@ -87,3 +87,22 @@ exports.deleteExam = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+exports.getExamQuestions = async (req, res) => {
+  try {
+    const { exam_id } = req.params;
+
+    const exam = await Exam.findById(exam_id);
+    if (!exam) {
+      return res.status(404).json({ message: "Exam not found" });
+    }
+
+    res.status(200).json({
+      questions: exam.questions,
+    });
+  } catch (error) {
+    console.error("Get questions error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

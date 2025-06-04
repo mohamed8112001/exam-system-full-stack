@@ -1,12 +1,12 @@
 const { Schema, model } = require("mongoose");
-const bcrypt = require("bcrypt");
+
 const ExamSchema = new Schema(
   {
     title: {
       type: String,
       required: true,
       trim: true,
-      maxLength: 100,
+      maxlength: 100,
     },
     description: {
       type: String,
@@ -27,6 +27,7 @@ const ExamSchema = new Schema(
         question_text: {
           type: String,
           required: true,
+          trim: true,
         },
         question_type: {
           type: String,
@@ -38,9 +39,9 @@ const ExamSchema = new Schema(
           required: true,
           min: 0,
         },
-        answers: [
+        options: [
           {
-            answer_text: {
+            option_text: {
               type: String,
               required: true,
             },
@@ -56,4 +57,6 @@ const ExamSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = { Exam: model("Exam", ExamSchema) };
+module.exports = {
+  Exam: model("Exam", ExamSchema),
+};
