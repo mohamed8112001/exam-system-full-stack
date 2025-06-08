@@ -1,0 +1,20 @@
+<!-- exams.component.html -->
+<div class="max-w-3xl mx-auto p-6">
+  <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Available Exams</h1>
+
+  <div *ngFor="let exam of exams" class="bg-white dark:bg-gray-900 p-4 mb-4 rounded-lg shadow flex justify-between items-center">
+    <div>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ exam.title }}</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        From: {{ exam.startTime | date:'shortTime' }} - To: {{ exam.endTime | date:'shortTime' }}
+      </p>
+    </div>
+    <button  [routerLink]="['/exam', exam.id]"
+  (click)="goToExam(exam)"
+  class="px-4 py-2 rounded text-white"
+  [ngClass]="canTakeExam(exam) ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'"
+>
+  Start
+</button>
+  </div>
+</div>

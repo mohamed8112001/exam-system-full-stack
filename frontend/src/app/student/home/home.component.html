@@ -1,0 +1,16 @@
+<h1 class="text-3xl font-bold text-gray-800 dark:text-white">مرحباً يا ميار 👋</h1>
+
+<div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div *ngFor="let result of previousResults" [ngClass]="{
+      'bg-green-100 border-green-500': result.score >= 50,
+      'bg-red-100 border-red-500': result.score < 50
+    }"
+    class="p-4 border-l-4 rounded shadow">
+    <h2 class="text-xl font-semibold">{{ result.title }}</h2>
+    <p class="text-gray-700">النتيجة: {{ result.score }}%</p>
+    <p class="text-sm" [ngClass]="{ 'text-green-700': result.score >= 50, 'text-red-700': result.score < 50 }">
+      {{ result.score >= 50 ? '✅ ناجح' : '❌ راسب' }}
+    </p>
+  </div>
+</div>
+

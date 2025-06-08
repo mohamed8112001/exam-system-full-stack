@@ -1,0 +1,19 @@
+<div class="max-w-xl mx-auto p-6 text-center">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Exam Result</h1>
+
+  <div
+    [ngClass]="{
+      'bg-green-100 text-green-800': percentage >= 50,
+      'bg-red-100 text-red-800': percentage < 50
+    }"
+    class="p-6 rounded-lg shadow text-xl"
+  >
+    <p class="mb-2">
+      Your Score: {{ score }} / {{ total }} ({{ percentage | number : '1.0-2' }}%)
+    </p>
+
+    <p class="text-2xl font-bold">
+      {{ percentage >= 50 ? 'Passed 🎉😊' : 'Failed 😢' }}
+    </p>
+  </div>
+</div>
