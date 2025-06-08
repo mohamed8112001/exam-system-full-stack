@@ -7,6 +7,7 @@ const addQuestion = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
     const exam = await Exam.findById(exam_id);
+    
     if (!exam) {
       return res.status(404).json({ message: "Exam not found" });
     }
