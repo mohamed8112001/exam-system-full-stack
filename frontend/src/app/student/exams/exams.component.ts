@@ -15,8 +15,8 @@ export class ExamsComponent {
     {
       id: 1,
       title: 'Math Exam',
-      startTime: new Date('2025-06-09T10:00:00'),
-      endTime: new Date('2025-06-09T11:00:00'),
+      startTime: new Date('2025-06-08T10:00:00'),
+      endTime: new Date('2025-06-09T12:00:00'),
     },
     {
       id: 2,
