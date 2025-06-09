@@ -8,6 +8,7 @@ import { HomeComponent } from './student/home/home.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { ManageExamsComponent } from './admin/manage-exams/manage-exams.component';
 import { ManageQuestionsComponent } from './admin/manage-questions/manage-questions.component';
+
 export const routes: Routes = [
  
   {

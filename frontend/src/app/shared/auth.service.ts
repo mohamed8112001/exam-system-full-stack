@@ -1,37 +1,45 @@
-// frontend/src/app/shared/auth.service.ts
+// src/app/shared/auth.service.ts
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { User } from '../auth/user.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
+  private currentUser: User | null = null;
+
+  constructor(private router: Router) {
+    const stored = localStorage.getItem('loggedUser');
+    this.currentUser = stored ? JSON.parse(stored) : null;
+  }
+
   login(email: string, password: string): boolean {
-    const storedUser = localStorage.getItem('registeredUser');
-    if (!storedUser) return false;
+    const stored = localStorage.getItem('registeredUser');
+    if (!stored) return false;
 
-    const user = JSON.parse(storedUser);
-
+    const user: User = JSON.parse(stored);
     if (user.email === email && user.password === password) {
-      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      this.currentUser = user;
+      localStorage.setItem('loggedUser', JSON.stringify(user));
       return true;
     }
-
     return false;
   }
 
-  getUserType(): 'student' | 'admin' | null {
-    const user = localStorage.getItem('loggedInUser');
-    if (!user) return null;
-
-    const parsedUser = JSON.parse(user);
-    return parsedUser.role;
-  }
-
   logout() {
-    localStorage.removeItem('loggedInUser');
+    this.currentUser = null;
+    localStorage.removeItem('loggedUser');
+    this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('loggedInUser');
+    return !!this.currentUser;
+  }
+
+  getUser(): User | null {
+    return this.currentUser;
+  }
+
+  getUserType(): 'student' | 'admin' | null {
+    return this.currentUser?.role ?? null;
   }
 }
