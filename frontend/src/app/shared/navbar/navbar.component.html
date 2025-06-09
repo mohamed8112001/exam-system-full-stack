@@ -1,34 +1,82 @@
-<nav class="bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700 mb-6">
+<nav class="bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700 mb-1 shadow-sm sticky top-0 z-50">
   <div class="max-w-screen-xl mx-auto flex flex-wrap items-center justify-between p-4">
-    <a routerLink="/Home" class="text-xl font-semibold text-blue-700 dark:text-white">Exam System</a>
-    <button data-collapse-toggle="navbar-default" type="button"
-      class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 md:hidden hover:bg-gray-100 focus:outline-none dark:text-gray-400 dark:hover:bg-gray-700"
-      aria-controls="navbar-default" aria-expanded="false">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M4 6h16M4 12h16M4 18h16"></path>
+    <a routerLink="/Home" class="text-2xl font-bold text-blue-700 dark:text-white hover:text-blue-800 dark:hover:text-blue-400 transition-colors">
+      Exam System
+    </a>
+
+    <button
+      data-collapse-toggle="navbar-default"
+      type="button"
+      class="inline-flex items-center p-2 w-10 h-10 justify-center text-gray-600 md:hidden hover:bg-gray-100 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-700 rounded-md transition"
+      aria-controls="navbar-default"
+      aria-expanded="false"
+      aria-label="Toggle navigation menu"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
       </svg>
     </button>
-    <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+
+    <div class="hidden w-full md:flex md:items-center md:w-auto" id="navbar-default">
       <ul
-        class="font-medium flex flex-col md:flex-row items-center gap-4 p-4 md:p-0 mt-4 md:mt-0 border md:border-0 rounded-lg bg-gray-50 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent">
+        class="flex flex-col md:flex-row md:space-x-8 font-medium w-full md:w-auto bg-gray-50 dark:bg-gray-800 md:bg-transparent rounded-lg md:rounded-none p-4 md:p-0 border border-gray-100 md:border-0 dark:border-gray-700"
+      >
         <li>
-          <a [routerLink]="['Home']" routerLinkActive="text-blue-700 font-semibold"
+          <a
+            [routerLink]="['Home']"
+            routerLinkActive="text-blue-700 font-semibold"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400">Home</a>
+            class="block py-2 px-3 rounded text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400 transition-colors"
+            >Home</a
+          >
         </li>
         <li>
-          <a [routerLink]="['student/result']" routerLinkActive="text-blue-700 font-semibold"
-            class="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400">Result</a>
+          <a
+            [routerLink]="['student/result']"
+            routerLinkActive="text-blue-700 font-semibold"
+            class="block py-2 px-3 rounded text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400 transition-colors"
+            >Result</a
+          >
         </li>
         <li>
-          <a [routerLink]="['student/exams']" routerLinkActive="text-blue-700 font-semibold"
-            class="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400">Exams</a>
+          <a
+            [routerLink]="['student/exams']"
+            routerLinkActive="text-blue-700 font-semibold"
+            class="block py-2 px-3 rounded text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400 transition-colors"
+            >Exams</a
+          >
         </li>
-        <li>
-          <a [routerLink]="['login']" routerLinkActive="text-blue-700 font-semibold"
-            class="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400">Login</a>
+
+        <li class="md:ml-auto flex items-center space-x-6 mt-4 md:mt-0">
+          <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
+            <a
+              routerLink="/login"
+              class="text-blue-600 hover:underline hover:text-blue-800 dark:text-blue-400 transition"
+              >Login</a
+            >
+            <a
+              routerLink="/register"
+              class="text-blue-600 hover:underline hover:text-blue-800 dark:text-blue-400 transition"
+              >Register</a
+            >
+          </ng-container>
+
+          <ng-template #loggedIn>
+            <span class="text-gray-700 dark:text-gray-200 text-sm">Hi, {{ authService.getUser()?.name }}</span>
+            <button
+              (click)="onLogout()"
+              class="text-red-500 hover:underline focus:outline-none transition"
+              aria-label="Logout"
+            >
+              Logout
+            </button>
+          </ng-template>
         </li>
       </ul>
     </div>

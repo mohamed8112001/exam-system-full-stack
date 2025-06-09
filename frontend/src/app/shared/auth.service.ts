@@ -1,24 +1,45 @@
+// src/app/shared/auth.service.ts
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { User } from '../auth/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  login(email: string, password: string) {
-    if (email.includes('admin')) {
-      localStorage.setItem('userType', 'admin');
-    } else {
-      localStorage.setItem('userType', 'student');
+  private currentUser: User | null = null;
+
+  constructor(private router: Router) {
+    const stored = localStorage.getItem('loggedUser');
+    this.currentUser = stored ? JSON.parse(stored) : null;
+  }
+
+  login(email: string, password: string): boolean {
+    const stored = localStorage.getItem('registeredUser');
+    if (!stored) return false;
+
+    const user: User = JSON.parse(stored);
+    if (user.email === email && user.password === password) {
+      this.currentUser = user;
+      localStorage.setItem('loggedUser', JSON.stringify(user));
+      return true;
     }
+    return false;
   }
 
   logout() {
-    localStorage.removeItem('userType');
+    this.currentUser = null;
+    localStorage.removeItem('loggedUser');
+    this.router.navigate(['/login']);
   }
 
-  getUserType() {
-    return localStorage.getItem('userType');
+  isLoggedIn(): boolean {
+    return !!this.currentUser;
   }
 
-  isLoggedIn() {
-    return !!this.getUserType();
+  getUser(): User | null {
+    return this.currentUser;
+  }
+
+  getUserType(): 'student' | 'admin' | null {
+    return this.currentUser?.role ?? null;
   }
 }

@@ -1,13 +1,12 @@
-import { Component  } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../shared/auth.service';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-
 @Component({
   selector: 'app-login',
-  imports: [FormsModule,RouterLink, ],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
@@ -17,12 +16,21 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onLogin() {
-    this.authService.login(this.email, this.password);
-    const role = this.authService.getUserType();
-    if (role === 'admin') {
-      this.router.navigate(['/admin/dashboard']);
+    const result = this.authService.login(this.email, this.password);
+    if (result) {
+      console.log(' Login successful:', result);
+
+      const role = this.authService.getUserType();
+      if (role === 'admin') {
+        this.router.navigate(['/admin/dashboard']);
+      } else if (role === 'student') {
+        this.router.navigate(['/student/exams']);
+      } else {
+        this.router.navigate(['/']);
+      }
     } else {
-      this.router.navigate(['/student/exams']);
+      console.error(' Login failed');
+      alert('Invalid email or password!');
     }
   }
 }
