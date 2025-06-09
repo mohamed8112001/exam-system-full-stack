@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {
-
+  // Dashboard logic will go here
 }

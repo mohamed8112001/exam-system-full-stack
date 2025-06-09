@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../shared/auth.service';
 import { User } from '../user.model';
 
 @Component({
@@ -8,7 +10,7 @@ import { User } from '../user.model';
   standalone: true,
   imports: [FormsModule, RouterLink],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
   name = '';
@@ -16,15 +18,18 @@ export class RegisterComponent {
   password = '';
   confirmPassword = '';
   role: 'student' | 'admin' = 'student';
+  error = '';
+  loading = false;
 
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   register() {
     if (this.password !== this.confirmPassword) {
-      alert('Passwords do not match!');
+      this.error = 'Passwords do not match!';
       return;
     }
 
+    this.loading = true;
     const newUser: User = {
       name: this.name,
       email: this.email,
@@ -32,9 +37,16 @@ export class RegisterComponent {
       role: this.role
     };
 
-
-    localStorage.setItem('registeredUser', JSON.stringify(newUser));
-    alert('Registration successful!');
-    this.router.navigate(['/login']);
+    this.authService.register(newUser).subscribe({
+      next: () => {
+        this.router.navigate(['/login'], { 
+          queryParams: { registered: 'true' } 
+        });
+      },
+      error: (err) => {
+        this.error = err.error.message || 'Registration failed';
+        this.loading = false;
+      }
+    });
   }
 }

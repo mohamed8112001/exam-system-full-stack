@@ -1,20 +1,30 @@
 <!-- exams.component.html -->
-<div class="max-w-3xl mx-auto p-6">
-  <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Available Exams</h1>
-
-  <div *ngFor="let exam of exams" class="bg-white dark:bg-gray-900 p-4 mb-4 rounded-lg shadow flex justify-between items-center">
-    <div>
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ exam.title }}</h2>
-      <p class="text-sm text-gray-600 dark:text-gray-400">
-        From: {{ exam.startTime | date:'shortTime' }} - To: {{ exam.endTime | date:'shortTime' }}
-      </p>
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">Available Exams</h1>
+  
+  <div *ngIf="loading" class="text-center py-8">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">Loading exams...</p>
+  </div>
+  
+  <div *ngIf="error" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
+    <p>{{ error }}</p>
+  </div>
+  
+  <div *ngIf="!loading && !error && exams.length === 0" class="text-center py-8 bg-gray-50 dark:bg-gray-800 rounded-lg">
+    <p class="text-gray-600 dark:text-gray-400">No exams available at the moment.</p>
+  </div>
+  
+  <div *ngIf="!loading && exams.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let exam of exams" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-2">{{ exam.title }}</h2>
+      <div class="text-gray-600 dark:text-gray-400 mb-4">
+        <p>Duration: {{ exam.duration_minutes }} minutes</p>
+        <p>Questions: {{ exam.questions?.length || 0 }}</p>
+      </div>
+      <a [routerLink]="['/student/exams', exam._id]" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
+        Start Exam
+      </a>
     </div>
-    <button  [routerLink]="['/exam', exam.id]"
-  (click)="goToExam(exam)"
-  class="px-4 py-2 rounded text-white"
-  [ngClass]="canTakeExam(exam) ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'"
->
-  Start
-</button>
   </div>
 </div>

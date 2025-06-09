@@ -68,7 +68,7 @@
           </ng-container>
 
           <ng-template #loggedIn>
-            <span class="text-gray-700 dark:text-gray-200 text-sm">Hi, {{ authService.getUser()?.name }}</span>
+            <span class="text-gray-200 text-sm">Hi, {{ authService.getUserRole() }}</span>
             <button
               (click)="onLogout()"
               class="text-red-500 hover:underline focus:outline-none transition"

@@ -5,20 +5,47 @@ const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
+    
+    // Validate input
+    if (!username || !email || !password || !role) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    
     if (!["student", "admin"].includes(role)) {
       return res.status(400).json({ message: "Invalid Role" });
     }
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({ 
+      $or: [{ email }, { username }] 
+    });
+    
+    if (existingUser) {
+      return res.status(400).json({ 
+        message: "User with this email or username already exists" 
+      });
+    }
+    
+    // Create new user
     const user = await User.create({
       username,
       email,
-      password_hash: password,
+      password_hash: password, // This will be hashed by the pre-save hook
       role,
     });
-    res
-      .status(201)
-      .json({ message: "User registered successfully", data: user });
+    
+    res.status(201).json({ 
+      message: "User registered successfully", 
+      data: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Registration error:", error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -47,13 +74,12 @@ exports.login = async (req, res) => {
 
 exports.getCurrentUser = async (req, res) => {
   try {
-    // -password-hashed    ==>  to not send the password in response
-    const user = await User.findById(req.user.user_id).select("-password_hash");
+    const user = await User.findById(req.user.user_id).select('-password_hash');
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json({ message: "Successfully", data: user });
+    res.json(user);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };

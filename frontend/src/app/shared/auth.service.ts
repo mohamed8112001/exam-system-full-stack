@@ -1,45 +1,61 @@
-// src/app/shared/auth.service.ts
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { User } from '../auth/user.model';
 
-@Injectable({ providedIn: 'root' })
+interface AuthResponse {
+  token: string;
+  role: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-  private currentUser: User | null = null;
+  private apiUrl = 'http://localhost:3001/api/auth';
+  
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
-  constructor(private router: Router) {
-    const stored = localStorage.getItem('loggedUser');
-    this.currentUser = stored ? JSON.parse(stored) : null;
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData);
   }
 
-  login(email: string, password: string): boolean {
-    const stored = localStorage.getItem('registeredUser');
-    if (!stored) return false;
-
-    const user: User = JSON.parse(stored);
-    if (user.email === email && user.password === password) {
-      this.currentUser = user;
-      localStorage.setItem('loggedUser', JSON.stringify(user));
-      return true;
-    }
-    return false;
+  login(email: string, password: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email, password })
+      .pipe(
+        tap(response => {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('userRole', response.role);
+        })
+      );
   }
 
-  logout() {
-    this.currentUser = null;
-    localStorage.removeItem('loggedUser');
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
     this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    return !!this.currentUser;
+    return !!this.getToken();
   }
 
-  getUser(): User | null {
-    return this.currentUser;
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 
-  getUserType(): 'student' | 'admin' | null {
-    return this.currentUser?.role ?? null;
+  getUserRole(): string | null {
+    return localStorage.getItem('userRole');
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'admin';
+  }
+
+  isStudent(): boolean {
+    return this.getUserRole() === 'student';
   }
 }

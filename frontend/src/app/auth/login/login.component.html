@@ -1,23 +1,3 @@
-<!-- 
-<h1  class="text-3xl font-extrabold text-center mb-6 text-blue-700 dark:text-white">Login</h1>
-<form  (ngSubmit)="onLogin()" class="max-w-sm mx-auto h-screen">
-  <div class="mb-5">
-    <label   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-    <input [(ngModel)]="email" name="email" type="email"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  required />
-  </div>
-  <div class="mb-5">
-    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
-    <input [(ngModel)]="password" name="password" type="password"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-  </div>
-  <p class="mb-6">
-    Don't Have an account <a routerLink="/register" class="text-blue-600 hover:underline hover:text-blue-800 dark:text-blue-400">Register</a>
-  </p>
-
-  
-  <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button>
-</form> -->
-
-
 <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
   <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
     <h1 class="text-3xl font-extrabold text-center mb-8 text-blue-700 dark:text-white">Login</h1>
@@ -47,6 +27,11 @@
         />
       </div>
 
+      <!-- Error Message -->
+      <div *ngIf="error" class="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+        {{ error }}
+      </div>
+
       <!-- Register Link -->
       <div class="mb-6 text-sm text-center text-gray-700 dark:text-gray-300">
         Don't have an account? 
@@ -56,9 +41,11 @@
       <!-- Submit Button -->
       <button 
         type="submit" 
+        [disabled]="loading"
         class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2.5 rounded-lg text-sm focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition"
       >
-        Login
+        <span *ngIf="loading">Loading...</span>
+        <span *ngIf="!loading">Login</span>
       </button>
     </form>
   </div>

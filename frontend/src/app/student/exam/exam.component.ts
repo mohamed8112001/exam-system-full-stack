@@ -1,65 +1,110 @@
-import { Component , OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-// import{ExamResultService} from '../result/exam-result.service';
-import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../shared/auth.service';
+
 @Component({
   selector: 'app-exam',
-  imports: [CommonModule, FormsModule,],
-  templateUrl: './exam.component.html',
-  styleUrl: './exam.component.css'
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './exam.component.html'
 })
 export class ExamComponent implements OnInit {
-  examId: number = 0;
-  examQuestions: any[] = [];
-  currentExam: any;
+  examId: string = '';
   exam: any = null;
-  allExams = [
-    {
-      id: 1,
-      Title:'Math exam',
-      questions: [
-        { q: 'What is 2 + 2?', options: ['2', '3', '4'], correct: '4' },
-        { q: 'What is 3 * 3?', options: ['6', '9', '12'], correct: '9' }
-      ]
-    },
-    {
-      id: 3,
-      Title:'English exam',
-      questions: [
-        { q: 'What is the synonym of "happy"?', options: ['Sad', 'Joyful', 'Angry'], correct: 'Joyful' },
-        { q: 'What is the antonym of "big"?', options: ['Large', 'Small', 'Huge'], correct: 'Small' }
-      ]
-    }
-  ];
+  loading = true;
+  error = '';
+  answers: any[] = [];
+  timeLeft: number = 0;
+  timerInterval: any;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-  this.examId = +this.route.snapshot.paramMap.get('id')!;
-  this.currentExam = this.allExams.find(e => e.id === this.examId);
-  this.examQuestions = this.currentExam ? this.currentExam.questions : [];
-}
-
-  score: number | null = null;
-
-  submitExam() {
-  let correct = 0;
-  for (let q of this.examQuestions) {
-    if (q.selectedAnswer === q.correct) {
-      correct++;
+    this.examId = this.route.snapshot.paramMap.get('id') || '';
+    if (this.examId) {
+      this.loadExam();
+    } else {
+      this.error = 'Invalid exam ID';
+      this.loading = false;
     }
   }
-  this.score = correct;
-  const percentage = (correct / this.examQuestions.length) * 100;
-  this.router.navigate(['/result'], {
-    state: {
-      score: correct,
-      total: this.examQuestions.length,
-      percentage: percentage
-    }
-  });
+
+  loadExam(): void {
+    this.http.get<any>(`http://localhost:3001/api/exams/${this.examId}`, {
+      headers: {
+        'Authorization': `Bearer ${this.authService.getToken()}`
+      }
+    }).subscribe({
+      next: (response) => {
+        this.exam = response.data;
+        this.timeLeft = this.exam.duration_minutes * 60;
+        this.startTimer();
+        this.initializeAnswers();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading exam:', err);
+        this.error = 'Failed to load exam. Please try again.';
+        this.loading = false;
+      }
+    });
   }
 
+  initializeAnswers(): void {
+    this.answers = this.exam.questions.map((q: any) => ({
+      question_id: q._id,
+      selected_option_id: null,
+      text_answer: ''
+    }));
+  }
+
+  startTimer(): void {
+    this.timerInterval = setInterval(() => {
+      if (this.timeLeft > 0) {
+        this.timeLeft--;
+      } else {
+        this.submitExam();
+      }
+    }, 1000);
+  }
+
+  formatTime(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  }
+
+  submitExam(): void {
+    clearInterval(this.timerInterval);
+    
+    this.http.post<any>(`http://localhost:3001/api/submissions/exams/${this.examId}/submit`, {
+      answers: this.answers
+    }, {
+      headers: {
+        'Authorization': `Bearer ${this.authService.getToken()}`
+      }
+    }).subscribe({
+      next: (response) => {
+        this.router.navigate(['/student/results']);
+      },
+      error: (err) => {
+        console.error('Error submitting exam:', err);
+        this.error = 'Failed to submit exam. Please try again.';
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+  }
 }

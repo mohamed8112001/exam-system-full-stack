@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-manage-questions',
-  imports: [],
-  templateUrl: './manage-questions.component.html',
-  styleUrl: './manage-questions.component.css'
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './manage-questions.component.html'
 })
 export class ManageQuestionsComponent {
-
+  // Question management logic will go here
 }
