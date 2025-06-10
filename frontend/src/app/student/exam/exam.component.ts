@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../shared/auth.service';
+import { ExamResultService } from '../result/exam-result.service';
 
 @Component({
   selector: 'app-exam',
@@ -24,7 +25,8 @@ export class ExamComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    private examResultService: ExamResultService
   ) {}
 
   ngOnInit(): void {
@@ -84,7 +86,6 @@ export class ExamComponent implements OnInit {
 
   submitExam(): void {
     clearInterval(this.timerInterval);
-    
     this.http.post<any>(`http://localhost:3001/api/submissions/exams/${this.examId}/submit`, {
       answers: this.answers
     }, {
@@ -93,7 +94,14 @@ export class ExamComponent implements OnInit {
       }
     }).subscribe({
       next: (response) => {
-        this.router.navigate(['/student/results']);
+        // Save result to local storage for dashboard/home
+        const score = response.data?.score || 0;
+        const total = response.data?.total_points || 0;
+        const percentage = total > 0 ? (score / total) * 100 : 0;
+        this.examResultService.saveResult(this.exam?.title || 'Exam', percentage);
+        this.router.navigate(['/student/result'], {
+          state: { score, total, percentage }
+        });
       },
       error: (err) => {
         console.error('Error submitting exam:', err);
