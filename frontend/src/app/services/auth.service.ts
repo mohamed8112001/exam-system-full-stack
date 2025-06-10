@@ -64,6 +64,9 @@ import { User } from '../auth/user.model';
   providedIn: 'root'
 })
 export class AuthService {
+  createExam(arg0: { title: string; description: string; duration_minutes: number; questions: any[]; }) {
+    throw new Error('Method not implemented.');
+  }
   private baseUrl = 'http://localhost:3001/api/auth'; 
 
   constructor(private http: HttpClient) {}
