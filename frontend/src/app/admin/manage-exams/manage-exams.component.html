@@ -2,9 +2,10 @@
   <h1 class="text-3xl font-bold mb-6">Manage Exams</h1>
   
   <div class="mb-6">
-    <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
-      Create New Exam
-    </button>
+<a [routerLink]="['/admin/exams/create']" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded inline-block">
+  Create New Exam
+</a>
+<!-- List exams here -->
   </div>
   
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
