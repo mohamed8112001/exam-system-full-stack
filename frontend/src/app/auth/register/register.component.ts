@@ -24,29 +24,36 @@ export class RegisterComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   register() {
-    if (this.password !== this.confirmPassword) {
-      this.error = 'Passwords do not match!';
-      return;
-    }
+  console.log('Register clicked');
 
-    this.loading = true;
-    const newUser: User = {
-      name: this.name,
-      email: this.email,
-      password: this.password,
-      role: this.role
-    };
-
-    this.authService.register(newUser).subscribe({
-      next: () => {
-        this.router.navigate(['/login'], { 
-          queryParams: { registered: 'true' } 
-        });
-      },
-      error: (err) => {
-        this.error = err.error.message || 'Registration failed';
-        this.loading = false;
-      }
-    });
+  if (this.password !== this.confirmPassword) {
+    this.error = 'Passwords do not match!';
+    return;
   }
+
+  this.loading = true;
+
+  const newUser = {
+    username: this.name, 
+    email: this.email,
+    password: this.password,
+    role: this.role
+  };
+
+  console.log('Data sent to backend:', newUser);
+
+  this.authService.register(newUser).subscribe({
+    next: () => {
+      this.router.navigate(['/login'], {
+        queryParams: { registered: 'true' }
+      });
+    },
+    error: (err) => {
+      console.error('Registration error', err);
+      this.error = err.error?.message || 'Registration failed';
+      this.loading = false;
+    }
+  });
+}
+
 }
