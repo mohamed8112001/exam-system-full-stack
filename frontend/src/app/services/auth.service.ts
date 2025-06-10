@@ -90,6 +90,18 @@ register(user: User): Observable<any> {
   return this.http.post<any>('http://localhost:3001/api/auth/register', user);
 }
 
+createExam(examData: any): Observable<any> {
+  const token = localStorage.getItem('token');
+  return this.http.post<any>(
+    'http://localhost:3001/api/exams',
+    examData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+}
 
   /**
    * 
@@ -104,7 +116,9 @@ register(user: User): Observable<any> {
     return !!localStorage.getItem('token');
   }
 
-
+getToken(): string {
+  return localStorage.getItem('token') || '';
+}
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
