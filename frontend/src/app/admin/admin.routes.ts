@@ -9,7 +9,7 @@ export const ADMIN_ROUTES: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'exams', component: ManageExamsComponent },
   { path: 'questions', component: ManageQuestionsComponent },
-  { path: 'exams/create', component: ExamComponent }, // أضف هذا السطر
+  { path: 'exams/create', component: ExamComponent }, 
 
 ];
 
