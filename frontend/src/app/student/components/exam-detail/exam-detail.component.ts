@@ -21,8 +21,8 @@ export class ExamDetailComponent implements OnInit, OnDestroy {
   private timerInterval?: any;
 
   exam$!: Observable<Exam | null>;
-  loading$ = this.examService.loading$;
-  error$ = this.examService.error$;
+  loading$!: Observable<boolean>;
+  error$!: Observable<string | null>;
 
   examForm!: FormGroup;
   timeLeft = 0;
@@ -40,6 +40,10 @@ export class ExamDetailComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Initialize observables
+    this.loading$ = this.examService.loading$;
+    this.error$ = this.examService.error$;
+
     this.examId = this.route.snapshot.paramMap.get('id')!;
     this.loadExam();
   }
@@ -150,8 +154,8 @@ export class ExamDetailComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.hasSubmitted = true;
           // Navigate to results page with submission data
-          this.router.navigate(['/student/results'], {
-            state: { 
+          this.router.navigate(['/results'], {
+            state: {
               submissionResult: response.data,
               examId: this.examId
             }
@@ -171,7 +175,7 @@ export class ExamDetailComponent implements OnInit, OnDestroy {
 
   getTimeLeftPercentage(): number {
     if (!this.exam$) return 100;
-    
+
     // This would need to be calculated based on the original duration
     // For now, return a placeholder
     return Math.max(0, (this.timeLeft / (60 * 60)) * 100); // Assuming 1 hour max

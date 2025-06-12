@@ -29,7 +29,7 @@ exports.updateExam = async (req, res, next) => {
 
 exports.deleteExam = async (req, res, next) => {
   try {
-    const result = await examService.deleteExam(req.params.id, req.user.user_id);
+    const result = await examService.deleteExam(req.params.id, req.user.user_id, req.user.role);
     res.status(200).json({
       success: true,
       message: result.message
@@ -74,7 +74,7 @@ exports.getExamById = async (req, res, next) => {
 
 exports.getExamStatistics = async (req, res, next) => {
   try {
-    const statistics = await examService.getExamStatistics(req.params.id, req.user.user_id);
+    const statistics = await examService.getExamStatistics(req.params.id, req.user.user_id, req.user.role);
     res.status(200).json({
       success: true,
       message: "Exam statistics retrieved successfully",

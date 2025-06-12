@@ -1,23 +1,136 @@
-<div class="container mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
-  
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-xl font-semibold mb-4">Exams</h2>
-      <p class="text-gray-600 dark:text-gray-400 mb-4">Manage your exams and questions.</p>
-      <a routerLink="/admin/exams" class="text-blue-600 hover:underline">Manage Exams →</a>
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+      <p class="mt-1 text-sm text-gray-600">Manage your examination system</p>
     </div>
-    
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-xl font-semibold mb-4">Questions</h2>
-      <p class="text-gray-600 dark:text-gray-400 mb-4">Create and edit questions for your exams.</p>
-      <a routerLink="/admin/questions" class="text-blue-600 hover:underline">Manage Questions →</a>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Total Exams</dt>
+                <dd class="text-lg font-medium text-gray-900">{{ totalExams || 0 }}</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Total Students</dt>
+                <dd class="text-lg font-medium text-gray-900">{{ totalStudents || 0 }}</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Total Submissions</dt>
+                <dd class="text-lg font-medium text-gray-900">{{ totalSubmissions || 0 }}</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-xl font-semibold mb-4">Results</h2>
-      <p class="text-gray-600 dark:text-gray-400 mb-4">View student exam results and statistics.</p>
-      <a routerLink="/admin/results" class="text-blue-600 hover:underline">View Results →</a>
+
+    <!-- Main Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white shadow rounded-lg p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center mb-4">
+          <div class="flex-shrink-0">
+            <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <h2 class="text-xl font-semibold text-gray-900">Exam Management</h2>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-6">Create, edit, and manage your exams with questions. Monitor exam performance and statistics.</p>
+        <div class="space-y-3">
+          <a routerLink="/admin/exams"
+             class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            Manage Exams
+          </a>
+          <a routerLink="/admin/exams/create"
+             class="block w-full bg-green-600 hover:bg-green-700 text-white text-center px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            Create New Exam
+          </a>
+        </div>
+      </div>
+
+      <div class="bg-white shadow rounded-lg p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center mb-4">
+          <div class="flex-shrink-0">
+            <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <h2 class="text-xl font-semibold text-gray-900">Results & Analytics</h2>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-6">View student exam results, performance statistics, and detailed analytics for all your exams.</p>
+        <div class="space-y-3">
+          <a routerLink="/results"
+             class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            View All Results
+          </a>
+          <button type="button" (click)="refreshStats()"
+                  class="block w-full bg-gray-600 hover:bg-gray-700 text-white text-center px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            Refresh Statistics
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="mt-8">
+      <div class="bg-white shadow rounded-lg">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
+        </div>
+        <div class="p-6">
+          <div class="text-center text-gray-500">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No recent activity</h3>
+            <p class="mt-1 text-sm text-gray-500">Activity will appear here as students take exams.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

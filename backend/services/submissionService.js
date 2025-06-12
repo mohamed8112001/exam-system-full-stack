@@ -7,6 +7,8 @@ const { ValidationError, NotFoundError, ForbiddenError } = require('../utils/err
 class SubmissionService {
   async submitExam(examId, studentId, answers) {
     try {
+
+
       // Check if exam exists
       const exam = await examRepository.findById(examId);
       if (!exam) {

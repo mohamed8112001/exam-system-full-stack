@@ -92,14 +92,17 @@ class ExamService {
     }
   }
 
-  async deleteExam(examId, userId) {
+  async deleteExam(examId, userId, userRole) {
     try {
       const exam = await examRepository.findById(examId);
       if (!exam) {
         throw new NotFoundError('Exam not found');
       }
 
-      if (exam.created_by.toString() !== userId) {
+
+
+      // Allow admins to delete any exam, or users to delete their own exams
+      if (userRole !== 'admin' && exam.created_by.toString() !== userId) {
         throw new ForbiddenError('You can only delete your own exams');
       }
 
@@ -117,14 +120,17 @@ class ExamService {
     }
   }
 
-  async getExamStatistics(examId, userId) {
+  async getExamStatistics(examId, userId, userRole) {
     try {
       const exam = await examRepository.findById(examId);
       if (!exam) {
         throw new NotFoundError('Exam not found');
       }
 
-      if (exam.created_by.toString() !== userId) {
+
+
+      // Allow admins to view statistics for any exam, or users to view their own exams
+      if (userRole !== 'admin' && exam.created_by.toString() !== userId) {
         throw new ForbiddenError('You can only view statistics for your own exams');
       }
 
@@ -134,7 +140,7 @@ class ExamService {
 
       const totalSubmissions = submissions.length;
       const totalPoints = exam.questions.reduce((sum, q) => sum + q.points, 0);
-      
+
       const scores = submissions.map(s => s.score);
       const averageScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
       const highestScore = scores.length > 0 ? Math.max(...scores) : 0;

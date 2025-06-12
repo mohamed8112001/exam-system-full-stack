@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../shared/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ExamService } from '../../core/services/exam.service';
 
 import { CommonModule } from '@angular/common';
@@ -30,14 +30,30 @@ export class ExamsComponent implements OnInit {
   editingExam: any = null;
   loadingExams = false;
   examError = '';
+  isEditMode = false;
+  examIdToEdit: string | null = null;
 
   constructor(
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private examService: ExamService
   ) {}
 
   ngOnInit(): void {
+    // Check if we're in edit mode
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.examIdToEdit = params['id'];
+        this.isEditMode = true;
+        this.showCreateForm = true;
+        this.loadExamForEdit(params['id']);
+      } else {
+        this.isEditMode = false;
+        this.examIdToEdit = null;
+      }
+    });
+
     this.loadExams();
   }
 
@@ -96,13 +112,25 @@ export class ExamsComponent implements OnInit {
     this.editingExam = null;
   }
 
+  loadExamForEdit(examId: string): void {
+    this.examService.getExamById(examId).subscribe({
+      next: (response: any) => {
+        const exam = response.data;
+        this.editingExam = exam;
+        this.title = exam.title;
+        this.description = exam.description || '';
+        this.duration_minutes = exam.duration_minutes;
+        this.questions = [...exam.questions];
+      },
+      error: (error: any) => {
+        this.error = 'Failed to load exam for editing';
+        console.error('Error loading exam:', error);
+      }
+    });
+  }
+
   editExam(exam: any): void {
-    this.editingExam = exam;
-    this.title = exam.title;
-    this.description = exam.description || '';
-    this.duration_minutes = exam.duration_minutes;
-    this.questions = [...exam.questions];
-    this.showCreateForm = true;
+    this.router.navigate(['/admin/exams', exam._id, 'edit']);
   }
 
   deleteExam(examId: string): void {
@@ -132,15 +160,15 @@ export class ExamsComponent implements OnInit {
       questions: this.questions
     };
 
-    if (this.editingExam) {
+    if (this.isEditMode && this.examIdToEdit) {
       // Update existing exam
-      this.examService.updateExam(this.editingExam._id, examData).subscribe({
+      this.examService.updateExam(this.examIdToEdit, examData).subscribe({
         next: () => {
           this.success = 'Exam updated successfully!';
           this.loading = false;
-          this.showCreateForm = false;
-          this.loadExams();
-          this.resetForm();
+          setTimeout(() => {
+            this.router.navigate(['/admin/exams']);
+          }, 1500);
         },
         error: (err: any) => {
           this.error = err.error?.message || 'Failed to update exam';

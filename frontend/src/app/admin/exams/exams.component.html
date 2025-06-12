@@ -53,7 +53,7 @@
     <!-- Create/Edit Exam Form -->
     <div *ngIf="showCreateForm" class="mb-8 bg-white shadow rounded-lg p-6">
       <h2 class="text-xl font-bold mb-4">
-        {{ editingExam ? 'Edit Exam' : 'Create New Exam' }}
+        {{ isEditMode ? 'Edit Exam' : 'Create New Exam' }}
       </h2>
 
       <form (ngSubmit)="createExam()" #examForm="ngForm">
@@ -147,15 +147,15 @@
           </button>
           <button type="submit" [disabled]="loading || questions.length === 0"
                   class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-            <span *ngIf="loading">{{ editingExam ? 'Updating...' : 'Creating...' }}</span>
-            <span *ngIf="!loading">{{ editingExam ? 'Update Exam' : 'Create Exam' }}</span>
+            <span *ngIf="loading">{{ isEditMode ? 'Updating...' : 'Creating...' }}</span>
+            <span *ngIf="!loading">{{ isEditMode ? 'Update Exam' : 'Create Exam' }}</span>
           </button>
         </div>
       </form>
     </div>
 
     <!-- Exams List -->
-    <div class="bg-white shadow rounded-lg">
+    <div *ngIf="!isEditMode" class="bg-white shadow rounded-lg">
       <div class="px-6 py-4 border-b border-gray-200">
         <h2 class="text-lg font-medium text-gray-900">Your Exams</h2>
       </div>
