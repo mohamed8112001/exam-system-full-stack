@@ -9,9 +9,8 @@ router.put("/:id", authMiddleware(["admin"]), examController.updateExam);
 router.delete("/:id", authMiddleware(["admin"]), examController.deleteExam);
 router.get("/:id/statistics", authMiddleware(["admin"]), examController.getExamStatistics);
 
-// Shared routes
+// Shared routes (for students and admins)
 router.get("/", authMiddleware(["student", "admin"]), examController.getExams);
 router.get("/:id", authMiddleware(["student", "admin"]), examController.getExamById);
 
 module.exports = router;
-

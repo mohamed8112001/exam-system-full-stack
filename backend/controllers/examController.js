@@ -84,3 +84,17 @@ exports.getExamStatistics = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+// ✅ Update Exam
+exports.updateExam = async (examId, data, userId) => {
+  const exam = await Exam.findOneAndUpdate(
+    { _id: examId, createdBy: userId }, // شرط التأكد من ملكية الامتحان
+    data,
+    { new: true }
+  );
+  if (!exam) throw new AppError('Exam not found or unauthorized', 404);
+  return exam;
+};
+
