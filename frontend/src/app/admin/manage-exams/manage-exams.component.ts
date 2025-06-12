@@ -40,6 +40,8 @@ export class ManageExamsComponent implements OnInit {
 
   deleteExam(id: string): void {
     if (!confirm('Are you sure you want to delete this exam?')) return;
+    this.success = '';
+    this.error = '';
     this.http.delete<any>(`http://localhost:3001/api/exams/${id}`, {
       headers: { 'Authorization': `Bearer ${this.authService.getToken()}` }
     }).subscribe({
@@ -47,8 +49,10 @@ export class ManageExamsComponent implements OnInit {
         this.success = 'Exam deleted successfully!';
         this.loadExams();
       },
-      error: () => {
-        this.error = 'Failed to delete exam';
+      error: (err) => {
+        console.error('Delete exam error:', err);
+        this.error = err.error?.message || 'Failed to delete exam';
+        this.loadExams();
       }
     });
   }

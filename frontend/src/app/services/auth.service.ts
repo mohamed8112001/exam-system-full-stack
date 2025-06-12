@@ -64,9 +64,7 @@ import { User } from '../auth/user.model';
   providedIn: 'root'
 })
 export class AuthService {
-  createExam(arg0: { title: string; description: string; duration_minutes: number; questions: any[]; }) {
-    throw new Error('Method not implemented.');
-  }
+  // Remove the stub createExam method to avoid duplicate implementation error
   private baseUrl = 'http://localhost:3001/api/auth'; 
 
   constructor(private http: HttpClient) {}
@@ -85,23 +83,22 @@ export class AuthService {
    * @param user 
    * @returns 
    */
-register(user: User): Observable<any> {
-  
-  return this.http.post<any>('http://localhost:3001/api/auth/register', user);
-}
+  register(user: User): Observable<any> {
+    return this.http.post<any>('http://localhost:3001/api/auth/register', user);
+  }
 
-createExam(examData: any): Observable<any> {
-  const token = localStorage.getItem('token');
-  return this.http.post<any>(
-    'http://localhost:3001/api/exams',
-    examData,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`
+  createExam(examData: any): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.post<any>(
+      'http://localhost:3001/api/exams',
+      examData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
-    }
-  );
-}
+    );
+  }
 
   /**
    * 
