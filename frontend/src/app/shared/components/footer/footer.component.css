@@ -1,0 +1,30 @@
+/* Footer specific styles */
+
+footer {
+  margin-top: auto;
+}
+
+.footer-link {
+  transition: color 0.2s ease-in-out;
+}
+
+.footer-link:hover {
+  color: #4f46e5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer-links {
+    margin-top: 1rem;
+  }
+}

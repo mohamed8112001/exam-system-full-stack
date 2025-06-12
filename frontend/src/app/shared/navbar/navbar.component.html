@@ -84,12 +84,27 @@
           </ng-container>
 
           <ng-template #loggedIn>
-            <span class="text-gray-200 text-sm">Hi, {{ authService.getUserRole() }}</span>
-            <button
-              (click)="onLogout()"
-              class="text-red-500 hover:underline focus:outline-none transition"
-              aria-label="Logout"
-            >
+            <!-- User Info -->
+            <div class="flex items-center space-x-3">
+              <span class="text-gray-700 text-sm">Welcome, {{ user?.username }}!</span>
+              <span class="px-2 py-1 text-xs font-semibold rounded-full"
+                    [class.bg-purple-100]="user?.role === 'admin'"
+                    [class.text-purple-800]="user?.role === 'admin'"
+                    [class.bg-green-100]="user?.role === 'student'"
+                    [class.text-green-800]="user?.role === 'student'">
+                {{ user?.role | titlecase }}
+              </span>
+            </div>
+
+            <!-- Action Buttons -->
+            <button type="button" (click)="navigateToDashboard()"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors">
+              <span *ngIf="user?.role === 'admin'">Dashboard</span>
+              <span *ngIf="user?.role === 'student'">My Exams</span>
+            </button>
+
+            <button type="button" (click)="onLogout()"
+                    class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors">
               Logout
             </button>
           </ng-template>
