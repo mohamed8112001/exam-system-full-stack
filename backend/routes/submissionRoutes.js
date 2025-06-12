@@ -10,4 +10,7 @@ router.get('/results', authMiddleware(['student']), submissionController.getStud
 // Admin routes
 router.get('/exams/:exam_id/results', authMiddleware(['admin']), submissionController.getExamResults);
 
+// Shared routes (with proper permission checks in controller)
+router.get('/:id', authMiddleware(['student', 'admin']), submissionController.getSubmissionDetails);
+
 module.exports = router;
