@@ -1,0 +1,67 @@
+/* Timer animation */
+.timer-warning {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Question card hover effect */
+.question-card {
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.question-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Radio button custom styling */
+input[type="radio"]:checked {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Textarea focus styling */
+textarea:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+/* Progress bar animation */
+.progress-bar {
+  transition: width 1s ease-in-out;
+}
+
+/* Submit button loading state */
+.btn-loading {
+  position: relative;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  border: 2px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -1,6 +1,6 @@
 <nav class="bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700 mb-1 shadow-sm sticky top-0 z-50">
   <div class="max-w-screen-xl mx-auto flex flex-wrap items-center justify-between p-4">
-    <a routerLink="/Home" class="text-2xl font-bold text-blue-700 dark:text-white hover:text-blue-800 dark:hover:text-blue-400 transition-colors">
+    <a routerLink="/home" class="text-2xl font-bold text-blue-700 dark:text-white hover:text-blue-800 dark:hover:text-blue-400 transition-colors">
       Exam System
     </a>
 
@@ -29,7 +29,7 @@
       >
         <li>
           <a
-            [routerLink]="['Home']"
+            [routerLink]="['/home']"
             routerLinkActive="text-blue-700 font-semibold"
             [routerLinkActiveOptions]="{ exact: true }"
             class="block py-2 px-3 rounded text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400 transition-colors"
@@ -38,20 +38,45 @@
         </li>
         <li>
           <a
-            [routerLink]="['student/result']"
+            [routerLink]="['/about']"
             routerLinkActive="text-blue-700 font-semibold"
             class="block py-2 px-3 rounded text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400 transition-colors"
-            >Result</a
+            >About Us</a
           >
         </li>
-        <li>
+        <li *ngIf="authService.isLoggedIn()">
           <a
-            [routerLink]="['student/exams']"
+            [routerLink]="['/results']"
+            routerLinkActive="text-blue-700 font-semibold"
+            class="block py-2 px-3 rounded text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400 transition-colors"
+            >Results</a
+          >
+        </li>
+        <li *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'student'">
+          <a
+            [routerLink]="['/student/exams']"
             routerLinkActive="text-blue-700 font-semibold"
             class="block py-2 px-3 rounded text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400 transition-colors"
             >Exams</a
           >
         </li>
+        <li *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'admin'">
+          <a
+            [routerLink]="['/admin/exams']"
+            routerLinkActive="text-blue-700 font-semibold"
+            class="block py-2 px-3 rounded text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400 transition-colors"
+            >Manage Exams</a
+          >
+        </li>
+        <!-- Duplicated Dashboard   -->
+        <!-- <li *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'admin'">
+          <a
+            [routerLink]="['/admin/dashboard']"
+            routerLinkActive="text-blue-700 font-semibold"
+            class="block py-2 px-3 rounded text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-400 transition-colors"
+            >Dashboard</a
+          >
+        </li> -->
 
         <li class="md:ml-auto flex items-center space-x-6 mt-4 md:mt-0">
           <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
@@ -68,12 +93,27 @@
           </ng-container>
 
           <ng-template #loggedIn>
-            <span class="text-gray-200 text-sm">Hi, {{ authService.getUserRole() }}</span>
-            <button
-              (click)="onLogout()"
-              class="text-red-500 hover:underline focus:outline-none transition"
-              aria-label="Logout"
-            >
+            <!-- User Info -->
+            <div class="flex items-center space-x-3">
+              <span class="text-gray-700 text-sm">Welcome, {{ user?.username }}!</span>
+              <span class="px-2 py-1 text-xs font-semibold rounded-full"
+                    [class.bg-purple-100]="user?.role === 'admin'"
+                    [class.text-purple-800]="user?.role === 'admin'"
+                    [class.bg-green-100]="user?.role === 'student'"
+                    [class.text-green-800]="user?.role === 'student'">
+                {{ user?.role | titlecase }}
+              </span>
+            </div>
+
+            <!-- Action Buttons -->
+            <button type="button" (click)="navigateToDashboard()"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors">
+              <span *ngIf="user?.role === 'admin'">Dashboard</span>
+              <span *ngIf="user?.role === 'student'">My Exams</span>
+            </button>
+
+            <button type="button" (click)="onLogout()"
+                    class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors">
               Logout
             </button>
           </ng-template>

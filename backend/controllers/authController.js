@@ -5,27 +5,27 @@ const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
-    
+
     // Validate input
     if (!username || !email || !password || !role) {
       return res.status(400).json({ message: "All fields are required" });
     }
-    
+
     if (!["student", "admin"].includes(role)) {
       return res.status(400).json({ message: "Invalid Role" });
     }
-    
+
     // Check if user already exists
-    const existingUser = await User.findOne({ 
-      $or: [{ email }, { username }] 
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }]
     });
-    
+
     if (existingUser) {
-      return res.status(400).json({ 
-        message: "User with this email or username already exists" 
+      return res.status(400).json({
+        message: "User with this email or username already exists"
       });
     }
-    
+
     // Create new user
     const user = await User.create({
       username,
@@ -33,9 +33,9 @@ exports.register = async (req, res) => {
       password_hash: password, // This will be hashed by the pre-save hook
       role,
     });
-    
-    res.status(201).json({ 
-      message: "User registered successfully", 
+
+    res.status(201).json({
+      message: "User registered successfully",
       data: {
         id: user._id,
         username: user.username,
@@ -62,7 +62,7 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { user_id: user.id, role: user.role },
+      { user_id: user._id.toString(), role: user.role, username: user.username },
       process.env.JWT_SECRET || "your_jwt_secret",
       { expiresIn: "1h" }
     );

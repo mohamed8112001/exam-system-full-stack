@@ -1,0 +1,66 @@
+/* Results page specific styles */
+
+.result-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.score-display {
+  font-family: 'Courier New', monospace;
+}
+
+.percentage-badge {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pagination-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.pagination-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading animation */
+.loading-spinner {
+  border-top-color: #3b82f6;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .result-card {
+    padding: 1rem;
+  }
+  
+  .score-display {
+    font-size: 1.25rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

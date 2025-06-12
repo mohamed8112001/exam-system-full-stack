@@ -7,13 +7,11 @@ const authMiddleware = require("../middleware/authMiddleware");
 router.post("/", authMiddleware(["admin"]), examController.createExam);
 router.put("/:id", authMiddleware(["admin"]), examController.updateExam);
 router.delete("/:id", authMiddleware(["admin"]), examController.deleteExam);
+router.get("/:id/statistics", authMiddleware(["admin"]), examController.getExamStatistics);
 
 // Shared routes
 router.get("/", authMiddleware(["student", "admin"]), examController.getExams);
 router.get("/:id", authMiddleware(["student", "admin"]), examController.getExamById);
-
-// Student-only routes
-router.post("/:id/submit", authMiddleware(["student"]), examController.submitExam);
 
 module.exports = router;
 

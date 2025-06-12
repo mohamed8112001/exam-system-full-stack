@@ -1,0 +1,173 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">
+            <span *ngIf="user?.role === 'student'">My Results</span>
+            <span *ngIf="user?.role === 'admin'">Exam Results Overview</span>
+          </h1>
+          <p class="mt-1 text-sm text-gray-600">
+            <span *ngIf="user?.role === 'student'">View your exam submissions and scores</span>
+            <span *ngIf="user?.role === 'admin'">Monitor exam performance and statistics</span>
+          </p>
+        </div>
+        
+        <div class="flex space-x-3">
+          <button routerLink="/home" 
+                  class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            ← Home
+          </button>
+          <button *ngIf="user?.role === 'student'" 
+                  routerLink="/student/exams"
+                  class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            Take New Exam
+          </button>
+          <button *ngIf="user?.role === 'admin'" 
+                  routerLink="/admin/exams"
+                  class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            Manage Exams
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Error</h3>
+          <p class="mt-1 text-sm text-red-700">{{ error }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Content -->
+    <div *ngIf="!loading && !error">
+      
+      <!-- Empty State -->
+      <div *ngIf="results.length === 0" class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">
+          <span *ngIf="user?.role === 'student'">No exam results yet</span>
+          <span *ngIf="user?.role === 'admin'">No exams created yet</span>
+        </h3>
+        <p class="mt-1 text-sm text-gray-500">
+          <span *ngIf="user?.role === 'student'">Take your first exam to see results here.</span>
+          <span *ngIf="user?.role === 'admin'">Create your first exam to see results here.</span>
+        </p>
+        <div class="mt-6">
+          <button *ngIf="user?.role === 'student'" 
+                  routerLink="/student/exams"
+                  class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            Browse Exams
+          </button>
+          <button *ngIf="user?.role === 'admin'" 
+                  routerLink="/admin/exams/create"
+                  class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            Create Exam
+          </button>
+        </div>
+      </div>
+
+      <!-- Student Results -->
+      <div *ngIf="user?.role === 'student' && results.length > 0" class="space-y-6">
+        <div *ngFor="let result of results" class="bg-white shadow rounded-lg p-6">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="text-lg font-medium text-gray-900">{{ result.exam.title }}</h3>
+              <p class="text-sm text-gray-500 mt-1">Duration: {{ result.exam.duration_minutes }} minutes</p>
+              <p class="text-sm text-gray-500">Submitted: {{ formatDate(result.submitted_at) }}</p>
+            </div>
+            
+            <div class="text-right">
+              <div class="flex items-center space-x-4">
+                <div>
+                  <span class="text-2xl font-bold" [ngClass]="getScoreColor(result.percentage)">
+                    {{ result.score }}/{{ result.total_points }}
+                  </span>
+                  <span class="text-sm text-gray-500 block">points</span>
+                </div>
+                <div>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                        [ngClass]="getScoreBadgeColor(result.percentage)">
+                    {{ result.percentage }}%
+                  </span>
+                </div>
+              </div>
+              
+              <div class="mt-4 space-x-2">
+                <button (click)="viewSubmissionDetails(result.submission_id)"
+                        class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
+                  View Details
+                </button>
+                <button (click)="retakeExam(result.exam.id)"
+                        class="text-green-600 hover:text-green-900 text-sm font-medium">
+                  Retake Exam
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Results -->
+      <div *ngIf="user?.role === 'admin' && results.length > 0" class="space-y-6">
+        <div *ngFor="let result of results" class="bg-white shadow rounded-lg p-6">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="text-lg font-medium text-gray-900">{{ result.exam.title }}</h3>
+              <p class="text-sm text-gray-500 mt-1">{{ result.exam.description }}</p>
+              <p class="text-sm text-gray-500">Created: {{ formatDate(result.exam.created_at) }}</p>
+            </div>
+            
+            <div class="text-right space-x-2">
+              <button (click)="viewExamStatistics(result.exam.id)"
+                      class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                View Statistics
+              </button>
+              <button routerLink="/admin/exams/{{ result.exam.id }}/edit"
+                      class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="totalPages > 1" class="mt-8 flex justify-between items-center">
+        <div class="text-sm text-gray-700">
+          Page {{ currentPage }} of {{ totalPages }}
+        </div>
+        
+        <div class="flex space-x-2">
+          <button (click)="previousPage()" 
+                  [disabled]="currentPage === 1"
+                  class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            Previous
+          </button>
+          <button (click)="nextPage()" 
+                  [disabled]="currentPage === totalPages"
+                  class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
